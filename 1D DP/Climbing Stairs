@@ -1,0 +1,122 @@
+C++ Solution:
+
+Recursion + memoization & Iterative Approach:
+TC: O(n)
+SC: O(n)
+
+#include<vector>
+int MOD = 1000000007;
+
+int f(int n, vector<int> &dp)
+{
+    if(n == 0|| n == 1) return 1;
+    
+    if(dp[n] != -1)
+        return dp[n];
+    
+    int step1 = f(n-1, dp);
+    int step2 = f(n-2, dp);
+    
+    return (step1 + step2) % MOD;
+}
+
+int countDistinctWays(int nStairs) {
+    
+    vector<int> dp(nStairs+1, 0);
+    
+    dp[0] = dp[1] = 1;
+    
+    for(int i = 2; i <= nStairs; i++)
+    {
+        dp[i] = (dp[i-1] + dp[i-2])%MOD;
+    }
+    
+    return dp[nStairs];
+}
+
+
+Most Optimized Approach:
+TC : O(n)
+SC: O(1)
+
+int countDistinctWays(int nStairs) {
+    
+    int prev = 1, prev2 = 1, cur = 0;
+    
+    for(int i = 2; i <= nStairs; i++)
+    {
+        cur = (prev + prev2)%MOD;
+        prev2 = prev;
+        prev = cur;
+    }
+    
+    return prev;
+}
+
+
+Java solution:
+
+Recursion + memoization & Iterative Approach:
+TC: O(n)
+SC: O(n)
+
+import java.util.Arrays;
+public class Solution {
+    private static int MOD = 1000000007;
+    
+    private static int f(int ind, int[] dp)
+    {
+        if(ind == 0 || ind == 1)
+            return 1;
+        
+        if(dp[ind] != -1)
+            return dp[ind];
+        
+        int step1 = f(ind-1, dp);
+        int step2 = f(ind-2, dp);
+        
+        
+        return dp[ind] = (step1 + step2) % MOD;
+    }
+    
+	public static int countDistinctWayToClimbStair(long nStairs) {
+		if(nStairs == 0) return 1;
+        if(nStairs == 1) return 1;
+        if(nStairs == 2) return 2;
+        
+        int n = (int) nStairs;
+        int dp[] = new int[n + 1];
+        
+        dp[0] = dp[1] = 1;
+        
+        for(int ind = 2; ind <= n; ind++)
+        {            
+            dp[ind] = ( dp[ind-1] +  dp[ind-2]) % MOD;
+        }
+        
+        return dp[n];
+	}
+}
+
+Optimized approach:
+TC: O(n)
+SC: O(1)
+
+public class Solution {
+    private static int MOD = 1000000007;
+    
+	public static int countDistinctWayToClimbStair(long nStairs) {
+		        
+        int n = (int) nStairs;
+        int prev = 1, prev2 = 1, cur;
+        
+        for(int ind = 2; ind <= n; ind++)
+        {            
+            cur  = ( prev +  prev2) % MOD;
+            prev2 = prev;
+            prev = cur;
+        }
+        
+        return prev;
+	}
+}
