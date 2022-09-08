@@ -1,5 +1,7 @@
 C++ solution:
 
+TC: O(n*k)
+SC: O(n)
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -53,3 +55,74 @@ int main(){
 	
 	return 0;
 }
+
+
+
+Java Solution:
+
+package Intermediate.Encapsulation.Car;
+
+import java.util.*;
+
+public class Sample   {
+
+    private static int f(int ind, int k, int arr[], int dp[])
+    {
+        if(ind == 0) return 0;
+
+        if(dp[ind] != -1)
+            return dp[ind];
+
+        int res = Integer.MAX_VALUE;
+
+        for(int i = 1; i <= k; i++)
+        {
+            if(ind - i >= 0)
+            {
+                int energy = Math.abs(arr[ind] - arr[ind - i]) + f(ind-i, k, arr, dp);
+
+                res = Math.min(res, energy);
+            }
+        }
+
+        return dp[ind] = res;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+
+        int arr[] = new int[n];
+        for(int i = 0; i < n; i++)
+        {
+            arr[i] = sc.nextInt();
+        }
+
+        int dp[] = new int[n];
+
+        dp[0] = 0;
+
+        for(int ind = 1; ind < n; ind++)
+        {
+            int res = Integer.MAX_VALUE;
+
+            for(int i = 1; i <= k; i++)
+            {
+                if(ind - i >= 0)
+                {
+                    int energy = Math.abs(arr[ind] - arr[ind - i]) + dp[ind-i];
+
+                    res = Math.min(res, energy);
+                }
+            }
+
+            dp[ind] = res;
+        }
+
+        System.out.print(dp[n-1]);
+    }
+}
+
