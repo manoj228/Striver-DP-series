@@ -1,0 +1,103 @@
+C++ Solution:
+
+TC : O(N)
+SC: O(N + N) = O(2N)
+
+long long int maximumNonAdjacentSum(vector<int> &nums){
+    int n = nums.size();
+    
+    long long int prev = nums[0];
+    long long int prev2 = 0;
+    
+    for(int i = 1; i < n; i++)
+    {
+        long long int pick = nums[i];
+        
+        if(i > 1) pick += prev2;
+        
+        long long int notpick = prev;
+        
+        long long int cur = max(pick, notpick);
+        
+        prev2 = prev;
+        prev = cur;
+    }
+    
+    return prev;
+}
+long long int houseRobber(vector<int>& valueInHouse)
+{
+    vector<int> temp1, temp2;
+    int n = valueInHouse.size();
+    
+    if(n == 1)
+        return valueInHouse[0];
+    
+    for(int i = 0; i < n; i++)
+    {
+        if(i != 0) 
+            temp1.push_back(valueInHouse[i]);
+        
+        if(i != n-1)
+            temp2.push_back(valueInHouse[i]);
+    }
+    
+    return max(maximumNonAdjacentSum(temp1), maximumNonAdjacentSum(temp2));
+    
+}
+
+
+Java Solution:
+
+TC: O(N)
+SC: O(2N)
+
+
+import java.util.*;
+public class Solution {
+    
+    public static int maximumNonAdjacentSum(ArrayList<Integer> nums) {
+        
+        int n = nums.size();
+
+        int prev = nums.get(0), prev2 = 0;
+
+        for(int ind = 1; ind < n; ind++)
+        {
+            int pick = nums.get(ind) + prev2;
+            int notPick = prev;
+
+            int cur = Math.max(pick, notPick);
+
+            prev2 = prev;
+            prev = cur;
+        }
+
+        return prev;
+
+    }
+    
+    
+	public static long houseRobber(int[] valueInHouse) {
+		
+        ArrayList<Integer> temp1 = new ArrayList<>();
+        ArrayList<Integer> temp2 = new ArrayList<>();
+        
+        int n = valueInHouse.length;
+        
+        if(n == 1) return valueInHouse[0];
+        
+        for(int i = 0; i < n; i++)
+        {
+            if(i != 0)
+                temp1.add(valueInHouse[i]);
+            
+            if(i != n-1)
+                temp2.add(valueInHouse[i]);
+        }
+        
+        return Math.max(maximumNonAdjacentSum(temp1), 
+                        maximumNonAdjacentSum(temp2));
+        
+	}	
+}
