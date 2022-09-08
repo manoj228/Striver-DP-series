@@ -1,0 +1,94 @@
+C++ Solution:
+
+TC: O(N)
+SC: O(N)
+
+
+int f(int ind, vector<int> &nums, vector<int> &dp)
+{
+    if(ind < 0) return 0;
+    
+    if(ind == 0) return nums[0];
+    
+    if(dp[ind] != -1)
+        return dp[ind];
+    
+    int pick = nums[ind] + f(ind - 2, nums, dp);
+    int notPick = f(ind-1, nums, dp);
+    
+    return dp[ind] = max(pick, notPick);
+}
+
+
+int maximumNonAdjacentSum(vector<int> &nums){
+    
+    int n = nums.size();
+    
+    vector<int> dp(n, 0);
+    
+    dp[0] = nums[0];
+    
+    for(int ind = 1; ind < n; ind++)
+    {
+        int pick = nums[ind] + dp[ind-2];
+        int notPick = dp[ind-1];
+
+        dp[ind] = max(pick, notPick);
+    }
+    
+    return dp[n-1];
+}
+
+
+Optimized approach:
+
+TC: O(N)
+SC : O(1)
+
+int maximumNonAdjacentSum(vector<int> &nums){
+    
+    int n = nums.size();
+    
+    int prev = nums[0], prev2 = 0;
+    
+    for(int ind = 1; ind < n; ind++)
+    {
+        int pick = nums[ind] + prev2;
+        int notPick = prev;
+
+        int cur = max(pick, notPick);
+        
+        prev2 = prev;
+        prev = cur;
+    }
+    
+    return prev;
+}
+
+
+Java Solution:
+Optimzied:
+
+import java.util.*;
+public class Solution {
+	public static int maximumNonAdjacentSum(ArrayList<Integer> nums) {
+		
+        int n = nums.size();
+
+        int prev = nums.get(0), prev2 = 0;
+
+        for(int ind = 1; ind < n; ind++)
+        {
+            int pick = nums.get(ind) + prev2;
+            int notPick = prev;
+
+            int cur = Math.max(pick, notPick);
+
+            prev2 = prev;
+            prev = cur;
+        }
+
+        return prev;
+
+	}
+}
