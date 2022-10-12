@@ -1,0 +1,72 @@
+Problem Link: https://takeuforward.org/data-structure/partition-equal-subset-sum-dp-15/
+
+
+C++: (Recursive + memoization) & (Iterative)
+
+TC: O(N*K) + O(N)
+SC: O(K)
+
+class Solution {
+private:
+bool f(int idx, int k, vector<int> &arr,vector<vector<int>> &dp)
+{
+    if(k == 0)
+        return true;
+    
+    if(idx == 0)
+        return (arr[idx] == k);
+    
+    if(dp[idx][k] != -1)
+        return dp[idx][k];
+    
+    bool notPick = f(idx - 1, k, arr, dp);
+    bool pick = false;
+    
+    if(k >= arr[idx])
+        pick = f(idx - 1, k - arr[idx], arr, dp);
+    
+    return dp[idx][k] = pick || notPick;
+}
+
+    
+public:
+    bool canPartition(vector<int>& nums) {
+        
+        int totSum = 0;
+        
+        for(auto num : nums)
+            totSum += num;
+        
+        if(totSum & 1)
+            return false;
+        
+        totSum >>= 1;
+        
+        int n = nums.size();
+        
+        vector<vector<int>> dp(n, vector<int>(totSum + 1, 0));
+        
+        vector<int> prev(totSum+1, 0), cur(totSum+1, 0);
+    
+        prev[0] = cur[0] = 1;
+
+        if(nums[0] <= totSum) prev[nums[0]] = 1;
+
+        for(int idx = 1; idx < n; idx++)
+        {
+            for(int tar = 1; tar <= totSum; tar++)
+            {
+                bool notPick = prev[tar];
+                bool pick = false;
+
+                if(tar >= nums[idx])
+                    pick = prev[tar - nums[idx]];
+
+                cur[tar] = pick || notPick;
+            }
+            prev = cur;
+        }
+
+        return prev[totSum];
+    }
+};
