@@ -1,0 +1,49 @@
+Problem link: https://www.codingninjas.com/codestudio/problems/partition-a-set-into-two-subsets-such-that-the-difference-of-subset-sums-is-minimum_842494?source=youtube&campaign=striver_dp_videos&utm_source=youtube&utm_medium=affiliate&utm_campaign=striver_dp_videos&leftPanelTab=0
+
+
+int f(int k, vector<int>& arr, int n)
+{
+    vector<int> prev(k+1, 0), cur(k+1, 0);
+    
+    prev[0] = true, cur[0] = true;
+    
+    if(arr[0] <= k) prev[arr[0]] = true;
+    
+    for(int ind = 1; ind < n; ind++)
+    {
+        for(int target = 1; target <= k; target++)
+        {
+            bool notTake = prev[target];
+            bool take = false;
+            
+            if(arr[ind] <= target)
+                take = prev[target - arr[ind]];
+            
+            cur[target] = take | notTake;
+        }
+        prev = cur;
+    }
+    
+    int mini = 1e8;
+    
+    for(int i = 0;  i <= k/2; i++)
+    {
+        if(prev[i])
+        {
+            int s1 = i, s2 = k - i;
+            
+            mini = min(mini, abs(s1 - s2));
+        }
+    }
+    
+    return mini;
+}
+
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+    int sum = 0;
+    for(auto &it : arr)
+        sum += it;
+    
+    return f(sum, arr, n);
+}
