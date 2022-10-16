@@ -1,0 +1,82 @@
+Problem link: https://www.codingninjas.com/codestudio/problems/partitions-with-given-difference_3751628
+
+
+C++ Solution:
+
+Recursive + memoization and Iterative
+
+TC: O(N*K)
+SC: O(K)
+
+#include <bits/stdc++.h> 
+
+int mod = (int)(1e9 + 7);
+int f(int idx, vector<int> &arr, int goal, vector<vector<int>> &dp)
+{
+    if(idx == 0)
+    {
+        if(goal == 0 && arr[0] == 0)
+            return 2;
+        
+        else if(goal == 0 || arr[0] == goal)
+            return 1;
+        
+        return 0;
+    }
+    
+    if(dp[idx][goal] != -1)
+        return dp[idx][goal];
+    
+    int notPick = f(idx-1, arr, goal, dp);
+    int pick = 0;
+    
+    if(arr[idx] <= goal)
+        pick = f(idx-1, arr, goal - arr[idx], dp);
+    
+    return dp[idx][goal] = (notPick + pick) % mod;
+}
+
+
+int countPartitions(int n, int d, vector<int> &arr) {
+ 
+    int totSum = 0;
+    for(auto &val : arr)
+    {
+        totSum += val;
+    }
+    
+    if(totSum - d < 0 || (totSum - d) % 2 == 1)
+        return 0;
+    
+    int k = (totSum - d) / 2;
+    
+    vector<int> prev(k+1, 0), cur(k+1, 0);
+    
+    if(arr[0] == 0)
+        prev[0] = 2;
+    else
+        prev[0] = 1;
+    
+    if(arr[0] != 0 && arr[0] <= k)
+        prev[arr[0]] = 1;
+   
+    
+    for(int idx = 1; idx < n; idx++)
+    {
+        for(int goal = 0; goal <= k; goal++)
+        {
+            int notPick = prev[goal];
+            int pick = 0;
+
+            if(arr[idx] <= goal)
+                pick = prev[goal - arr[idx]];
+
+            cur[goal] = (notPick + pick) % mod;
+        }
+        prev = cur;
+    }
+    
+    return prev[k];
+}
+
+
