@@ -1,0 +1,89 @@
+probblem link: https://www.codingninjas.com/codestudio/problems/0-1-knapsack_920542
+
+
+C++ Solution:
+Recursion + Memoization and Iterative:
+
+TC: O(N * W)
+SC: O(N * W)
+
+#include <bits/stdc++.h> 
+int f(int idx, vector<int> &weight, vector<int> &value, int W,vector<vector<int>> &dp)
+{
+    if(idx == 0)
+    {
+        if(weight[0] <= W)
+            return value[0];
+        
+        return 0;
+    }
+    
+    if(dp[idx][W] != -1)
+        return dp[idx][W];
+    
+    int notTake = f(idx-1, weight, value, W, dp);
+    int take = 0;
+    
+    if(weight[idx] <= W)
+        take = value[idx] + f(idx-1, weight, value, W - weight[idx], dp);
+    
+    return dp[idx][W] = max(take, notTake);
+}
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWt) 
+{
+    vector<vector<int>> dp(n, vector<int>(maxWt+1, 0));
+    
+    for(int i = weight[0]; i <= maxWt; i++)
+        dp[0][i] = value[0];
+    
+    for(int idx=1; idx < n; idx++)
+    {
+        for(int W = 0; W <= maxWt; W++)
+        {
+             int notTake = dp[idx-1][W];
+            int take = 0;
+
+            if(weight[idx] <= W)
+                take = value[idx] + dp[idx-1][W - weight[idx]];
+
+            dp[idx][W] = max(take, notTake);
+        }
+    }
+    
+    return dp[n-1][maxWt];
+}
+
+
+
+Space optimized:
+
+TC: O(N * W)
+SC: O(W)
+
+#include <bits/stdc++.h> 
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWt) 
+{
+    vector<int> prev(maxWt+1, 0);
+    
+    for(int i = weight[0]; i <= maxWt; i++)
+        prev[i] = value[0];
+    
+    for(int idx=1; idx < n; idx++)
+    {
+        for(int W = maxWt; W >= 0; W--)
+        {
+             int notTake = prev[W];
+            int take = 0;
+
+            if(weight[idx] <= W)
+                take = value[idx] + prev[W - weight[idx]];
+
+            prev[W] = max(take, notTake);
+        }
+       ;
+    }
+    
+    return prev[maxWt];
+}
