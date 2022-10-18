@@ -1,0 +1,115 @@
+Problem link: https://leetcode.com/problems/coin-change/
+
+
+C++ Solution:
+Recursive + Memoization & Iterative solution
+
+TC: O(N * amount)
+SC: O(N * amount)
+
+class Solution {
+private:
+    int f(int idx, vector<int> &coins, int goal, vector<vector<int>> &dp)
+    {
+        if(idx == 0)
+        {
+            if(goal % coins[0] == 0)
+                return goal / coins[0];
+            
+            return 1e9;
+        }
+        
+        if(dp[idx][goal] != -1)
+            return dp[idx][goal];
+        
+        int notPick = f(idx-1, coins, goal, dp);
+        int pick = 1e9;
+        
+        if(goal >= coins[idx])
+            pick = 1 + f(idx, coins, goal - coins[idx], dp);
+        
+        return dp[idx][goal] = min(pick, notPick);
+    }
+    
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        
+        int n = coins.size();
+        
+        vector<vector<int>> dp(n, vector<int>(amount+1, 0));
+        
+        for(int goal = 0; goal <= amount; goal++)
+        {
+            if(goal % coins[0] == 0)
+                dp[0][goal] = goal / coins[0];
+            
+            else
+                dp[0][goal] = 1e9;
+        }
+        
+        for(int idx = 1; idx < n; idx++)
+        {
+            for(int goal = 0; goal <= amount; goal++)
+            {
+                int notPick = dp[idx-1][goal];
+                int pick = 1e9;
+
+                if(goal >= coins[idx])
+                    pick = 1 + dp[idx][goal - coins[idx]];
+
+                dp[idx][goal] = min(pick, notPick);
+            }
+        }
+        
+        
+        int res = dp[n-1][amount];
+        
+        return res != 1e9 ? res : -1 ;
+    }
+};
+
+
+Space Optimized:
+
+TC: O(N * amount)
+SC: O(amount)
+
+class Solution {    
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        
+        int n = coins.size();
+        
+        vector<int> prev(amount+1, 0), cur(amount+1, 0);
+        
+        for(int goal = 0; goal <= amount; goal++)
+        {
+            if(goal % coins[0] == 0)
+                prev[goal] = goal / coins[0];
+            
+            else
+                prev[goal] = 1e9;
+        }
+        
+        for(int idx = 1; idx < n; idx++)
+        {
+            for(int goal = 0; goal <= amount; goal++)
+            {
+                int notPick = prev[goal];
+                int pick = 1e9;
+
+                if(goal >= coins[idx])
+                    pick = 1 + cur[goal - coins[idx]];
+
+                cur[goal] = min(pick, notPick);
+            }
+            
+            prev = cur;
+        }
+        
+        
+        int res = prev[amount];
+        
+        return res != 1e9 ? res : -1 ;
+    }
+};
