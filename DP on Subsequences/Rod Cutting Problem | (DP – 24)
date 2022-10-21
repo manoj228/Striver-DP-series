@@ -1,0 +1,89 @@
+Problem Link:
+
+
+C++ Solution:
+
+Recursive + memoization and Iterative
+
+TC: O(N * N)
+SC: O(N * N)
+
+int f(int idx, int N, vector<int> &price, vector<vector<int>> &dp)
+{
+    if(idx == 0)
+    {
+        return N * price[0];
+    }
+    
+    if(dp[idx][N] != -1)
+        return dp[idx][N];
+    
+    int notPick = f(idx-1, N, price, dp);
+    int pick = INT_MIN;
+    int rodLen = idx+1;
+    
+    if(rodLen <= N)
+        pick = price[idx] + f(idx, N - rodLen, price, dp);
+    
+    return dp[idx][N] = max(pick, notPick);
+}
+
+int cutRod(vector<int> &price, int n)
+{
+    vector<vector<int>> dp(n, vector<int>(n+1, 0));
+    
+    for(int idx = 0; idx <= n; idx++)
+        dp[0][idx] = idx * price[0];
+    
+    for(int idx = 1; idx < n; idx++)
+    {
+        for(int N = 0; N <= n; N++)
+        {
+            int notPick = dp[idx-1][N];
+            int pick = INT_MIN;
+            int rodLen = idx+1;
+
+            if(rodLen <= N)
+                pick = price[idx] + dp[idx][N - rodLen];
+
+            dp[idx][N] = max(pick, notPick);
+        }
+    }
+    
+	return dp[n-1][n];
+}
+
+
+
+Space optimized approach
+
+TC: O(N * N)
+SC: O(N)
+
+int cutRod(vector<int> &price, int n)
+{
+    vector<int> cur(n+1, 0);
+    
+    for(int idx = 0; idx <= n; idx++)
+        cur[idx] = idx * price[0];
+    
+    for(int idx = 1; idx < n; idx++)
+    {
+        for(int N = 0; N <= n; N++)
+        {
+            int notPick = cur[N];
+            int pick = INT_MIN;
+            int rodLen = idx+1;
+
+            if(rodLen <= N)
+                pick = price[idx] + cur[N - rodLen];
+
+            cur[N] = max(pick, notPick);
+        }
+        
+    }
+    
+	return cur[n];
+}
+
+
