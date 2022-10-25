@@ -1,0 +1,102 @@
+problem link: https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+
+
+Minimum insertion to make string palindrome = n - longest palindromic subsequence
+longest palindromic subsequence = lcs(str, rev(str))
+
+C++ Solution:
+
+TC: O(M*N)
+SC: O(N)
+
+class Solution {
+private:
+    int lcs(string &text1, string &text2)
+    {
+        int m = text1.size(), n = text2.size();
+        
+        vector<int> prev(n+1, 0), cur(n+1, 0);
+        
+        for(int i = 1; i <= m; i++)
+        {
+            for(int j = 1; j <= n; j++)
+            {
+                if(text1[i-1] == text2[j-1])
+                    cur[j] = 1 + prev[j-1];
+                
+                else
+                    cur[j] = max(prev[j], cur[j-1]);
+            }
+            
+            prev = cur;
+        }
+        
+        return prev[n];
+    }
+    
+public:
+    int longestPalindromeSubseq(string s) {
+        
+        string revStr = s;
+        
+        reverse(revStr.begin(), revStr.end());
+        
+        return lcs(s, revStr);
+    }
+    
+public:
+    int minInsertions(string s) {
+        
+        int n = s.size();
+        
+        return n - longestPalindromeSubseq(s);
+    }
+};
+
+
+Java Solution:
+
+
+class Solution {
+    
+    private int lcs(String text1, String text2)
+    {
+        int m = text1.length(), n = text2.length();
+        
+        int[] prev = new int[n+1];
+        int[] cur = new int[n+1];
+        
+        for(int i = 1; i <= m; i++)
+        {
+            for(int j = 1; j <= n; j++)
+            {
+                if(text1.charAt(i-1) == text2.charAt(j-1))
+                    cur[j] = 1 + prev[j-1];
+                
+                else
+                    cur[j] = Math.max(prev[j], cur[j-1]);
+            }
+            
+            prev = (int[])(cur.clone());
+        }
+        
+        return prev[n];
+    }
+    
+    public int longestPalindromeSubseq(String s) {
+        
+        String rev = s;
+        
+        StringBuilder sb = new StringBuilder(rev);
+        
+        rev = sb.reverse().toString();
+        
+        return lcs(s, rev);
+    }
+    
+    public int minInsertions(String s) {
+        int n = s.length();
+        
+        return n - longestPalindromeSubseq(s);
+    }
+}
